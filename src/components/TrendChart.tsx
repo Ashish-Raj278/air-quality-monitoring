@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-import { formatTime, type Reading } from "@/lib/aqi";
+import { formatDate, formatTime, type Reading } from "@/lib/aqi";
 
 ChartJS.register(
   CategoryScale,
@@ -29,11 +29,21 @@ interface TrendChartProps {
   label: string;
   color: string;
   unit?: string;
+  timeFormat?: "time" | "date";
 }
 
-export function TrendChart({ readings, dataKey, label, color, unit }: TrendChartProps) {
-  const last = readings.slice(-20);
-  const labels = last.map((r) => formatTime(r.timestamp));
+export function TrendChart({
+  readings,
+  dataKey,
+  label,
+  color,
+  unit,
+  timeFormat = "time",
+}: TrendChartProps) {
+  const last = readings.slice(-30);
+  const labels = last.map((r) =>
+    timeFormat === "date" ? formatDate(r.timestamp) : formatTime(r.timestamp),
+  );
 
   const data = {
     labels,
