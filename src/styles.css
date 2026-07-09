@@ -61,6 +61,10 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
 :root {
   --radius: 0.9rem;
   --background: oklch(0.985 0.005 220);
