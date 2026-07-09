@@ -11,6 +11,12 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { useState } from "react";
+import { MonitoringProvider } from "../lib/monitoring-context";
+import { ThemeProvider } from "../lib/theme";
+import { AppSidebar } from "../components/AppSidebar";
+import { TopBar } from "../components/TopBar";
+import { AlertBanner } from "../components/AlertBanner";
 
 function NotFoundComponent() {
   return (
@@ -77,11 +83,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "AirSense — Smart Air Quality Monitoring System" },
+      {
+        name: "description",
+        content:
+          "Professional real-time air quality monitoring dashboard tracking AQI, PM2.5, PM10, temperature, humidity and CO₂ with live charts and health recommendations.",
+      },
+      { name: "author", content: "AirSense" },
+      { property: "og:title", content: "AirSense — Smart Air Quality Monitoring System" },
+      {
+        property: "og:description",
+        content:
+          "Real-time air quality dashboard with live AQI monitoring, trend charts, historical data and health recommendations.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -90,6 +104,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -116,11 +136,25 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider>
+        <MonitoringProvider>
+          <div className="min-h-screen w-full bg-background">
+            <AppSidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
+            <div className="lg:pl-64">
+              <TopBar onMenu={() => setMenuOpen(true)} />
+              <AlertBanner />
+              {/* Required: nested routes render here. */}
+              <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
+                <Outlet />
+              </main>
+            </div>
+          </div>
+        </MonitoringProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
