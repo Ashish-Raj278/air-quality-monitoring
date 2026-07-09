@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useState } from "react";
 import { MonitoringProvider } from "../lib/monitoring-context";
+import { AuthProvider, useAuth } from "../lib/auth";
+import { Login } from "../components/Login";
 import { ThemeProvider } from "../lib/theme";
 import { AppSidebar } from "../components/AppSidebar";
 import { TopBar } from "../components/TopBar";
@@ -136,25 +138,36 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const [menuOpen, setMenuOpen] = useState(false);
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <MonitoringProvider>
-          <div className="min-h-screen w-full bg-background">
-            <AppSidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
-            <div className="lg:pl-64">
-              <TopBar onMenu={() => setMenuOpen(true)} />
-              <AlertBanner />
-              {/* Required: nested routes render here. */}
-              <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
-                <Outlet />
-              </main>
-            </div>
-          </div>
-        </MonitoringProvider>
+        <AuthProvider>
+          <AppShell />
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
+  );
+}
+
+function AppShell() {
+  const { isAuthenticated } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  if (!isAuthenticated) return <Login />;
+
+  return (
+    <MonitoringProvider>
+      <div className="min-h-screen w-full bg-background">
+        <AppSidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
+        <div className="lg:pl-64">
+          <TopBar onMenu={() => setMenuOpen(true)} />
+          <AlertBanner />
+          {/* Required: nested routes render here. */}
+          <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8">
+            <Outlet />
+          </main>
+        </div>
+      </div>
+    </MonitoringProvider>
   );
 }
