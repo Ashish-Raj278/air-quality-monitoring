@@ -59,7 +59,8 @@ export function TrendChart({ readings, dataKey, label, color, unit }: TrendChart
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (ctx: { parsed: { y: number } }) => ` ${ctx.parsed.y}${unit ? ` ${unit}` : ""}`,
+          label: (ctx: { parsed: { y: number | null } }) =>
+            ` ${ctx.parsed.y ?? 0}${unit ? ` ${unit}` : ""}`,
         },
       },
     },
@@ -73,7 +74,7 @@ export function TrendChart({ readings, dataKey, label, color, unit }: TrendChart
         ticks: { color: "#94a3b8", font: { size: 10 } },
       },
     },
-  };
+  } as const;
 
   return (
     <div className="h-56">
