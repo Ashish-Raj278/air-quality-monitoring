@@ -1,6 +1,7 @@
 import {
   CategoryScale,
   Chart as ChartJS,
+  type ChartOptions,
   Filler,
   Legend,
   LineElement,
@@ -51,7 +52,7 @@ export function TrendChart({ readings, dataKey, label, color, unit }: TrendChart
     ],
   };
 
-  const options = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
     animation: { duration: 400 },
@@ -59,8 +60,7 @@ export function TrendChart({ readings, dataKey, label, color, unit }: TrendChart
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (ctx: { parsed: { y: number | null } }) =>
-            ` ${ctx.parsed.y ?? 0}${unit ? ` ${unit}` : ""}`,
+          label: (ctx) => ` ${ctx.parsed.y ?? 0}${unit ? ` ${unit}` : ""}`,
         },
       },
     },
@@ -74,7 +74,7 @@ export function TrendChart({ readings, dataKey, label, color, unit }: TrendChart
         ticks: { color: "#94a3b8", font: { size: 10 } },
       },
     },
-  } as const;
+  };
 
   return (
     <div className="h-56">
