@@ -1,12 +1,14 @@
-import { Bell, Menu, Moon, RefreshCw, Sun } from "lucide-react";
+import { Bell, LogOut, Menu, Moon, RefreshCw, Sun } from "lucide-react";
 
 import { getAqiCategory } from "@/lib/aqi";
+import { useAuth } from "@/lib/auth";
 import { useMonitoring } from "@/lib/monitoring-context";
 import { useTheme } from "@/lib/theme";
 
 export function TopBar({ onMenu }: { onMenu: () => void }) {
   const { latest, refresh, live, setLive } = useMonitoring();
   const { theme, toggle } = useTheme();
+  const { logout } = useAuth();
   const category = latest ? getAqiCategory(latest.aqi) : null;
 
   return (
@@ -61,6 +63,15 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
           aria-label="Toggle theme"
         >
           {theme === "dark" ? <Sun className="h-4.5 w-4.5" /> : <Moon className="h-4.5 w-4.5" />}
+        </button>
+        <button
+          onClick={logout}
+          className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
+          aria-label="Log out"
+          title="Log out"
+        >
+          <LogOut className="h-4 w-4" />
+          <span className="hidden sm:inline">Logout</span>
         </button>
       </div>
     </header>
