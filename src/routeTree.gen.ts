@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RecommendationsRouteImport } from './routes/recommendations'
 import { Route as LiveRouteImport } from './routes/live'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecommendationsRoute = RecommendationsRouteImport.update({
   id: '/recommendations',
   path: '/recommendations',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/live': typeof LiveRoute
   '/recommendations': typeof RecommendationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/live': typeof LiveRoute
   '/recommendations': typeof RecommendationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,33 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/live': typeof LiveRoute
   '/recommendations': typeof RecommendationsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/history' | '/live' | '/recommendations'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/history'
+    | '/live'
+    | '/recommendations'
+    | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/history' | '/live' | '/recommendations'
-  id: '__root__' | '/' | '/about' | '/history' | '/live' | '/recommendations'
+  to:
+    | '/'
+    | '/about'
+    | '/history'
+    | '/live'
+    | '/recommendations'
+    | '/sitemap.xml'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/history'
+    | '/live'
+    | '/recommendations'
+    | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,10 +105,18 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   LiveRoute: typeof LiveRoute
   RecommendationsRoute: typeof RecommendationsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recommendations': {
       id: '/recommendations'
       path: '/recommendations'
@@ -125,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   LiveRoute: LiveRoute,
   RecommendationsRoute: RecommendationsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
