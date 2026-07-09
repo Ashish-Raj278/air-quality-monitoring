@@ -1,4 +1,4 @@
-import { Bell, Download, Menu, Moon, RefreshCw, Sun } from "lucide-react";
+import { Bell, Menu, Moon, RefreshCw, Sun } from "lucide-react";
 
 import { getAqiCategory } from "@/lib/aqi";
 import { useMonitoring } from "@/lib/monitoring-context";
@@ -66,5 +66,3 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
     </header>
   );
 }
-
-export { Download };
