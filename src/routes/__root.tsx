@@ -96,11 +96,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Real-time air quality dashboard with live AQI monitoring, trend charts, historical data and health recommendations.",
+          "Professional real-time air quality monitoring dashboard tracking AQI, PM2.5, PM10, temperature, humidity and CO₂ with live charts and health recommendations.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "AirSense — Smart Air Quality Monitoring System" },
+      { name: "twitter:description", content: "Professional real-time air quality monitoring dashboard tracking AQI, PM2.5, PM10, temperature, humidity and CO₂ with live charts and health recommendations." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/eb275cc5-d5be-42da-8887-a421742100c8/id-preview-89a1c303--d058b92a-729b-4b20-8f19-15897cd082a2.lovable.app-1783575754468.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/eb275cc5-d5be-42da-8887-a421742100c8/id-preview-89a1c303--d058b92a-729b-4b20-8f19-15897cd082a2.lovable.app-1783575754468.png" },
     ],
     links: [
       {
