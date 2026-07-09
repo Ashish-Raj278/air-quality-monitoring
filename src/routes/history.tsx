@@ -18,7 +18,7 @@ export const Route = createFileRoute("/history")({
 const PAGE_SIZE = 8;
 
 function HistoryPage() {
-  const { readings } = useMonitoring();
+  const { readings, city } = useMonitoring();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("all");
   const [desc, setDesc] = useState(true);
@@ -61,7 +61,9 @@ function HistoryPage() {
           <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
             Historical Data
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">{filtered.length} readings recorded</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Last 30 days for {city} · {filtered.length} readings
+          </p>
         </div>
         <button
           onClick={exportCsv}

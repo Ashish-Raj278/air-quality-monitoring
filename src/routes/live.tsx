@@ -3,7 +3,7 @@ import { Droplets, Factory, Gauge, Pause, Play, Thermometer, Wind } from "lucide
 
 import { MetricCard } from "@/components/MetricCard";
 import { TrendChart } from "@/components/TrendChart";
-import { formatTime, getAqiCategory } from "@/lib/aqi";
+import { formatDate, getAqiCategory } from "@/lib/aqi";
 import { useMonitoring } from "@/lib/monitoring-context";
 
 export const Route = createFileRoute("/live")({
@@ -25,7 +25,7 @@ const charts = [
 ];
 
 function LivePage() {
-  const { latest, readings, live, setLive } = useMonitoring();
+  const { latest, readings, live, setLive, city } = useMonitoring();
   if (!latest) return null;
   const category = getAqiCategory(latest.aqi);
 
@@ -37,7 +37,7 @@ function LivePage() {
             Live Monitoring
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            New readings simulated every 5 seconds · Last {formatTime(latest.timestamp)}
+            Last 30 days of readings for {city} · Updated {formatDate(latest.timestamp)}
           </p>
         </div>
         <button
@@ -65,7 +65,7 @@ function LivePage() {
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: c.color }} />
               <h2 className="text-sm font-bold text-card-foreground">{c.label}</h2>
             </div>
-            <TrendChart readings={readings} dataKey={c.key} label={c.label} color={c.color} unit={c.unit} />
+            <TrendChart readings={readings} dataKey={c.key} label={c.label} color={c.color} unit={c.unit} timeFormat="date" />
           </div>
         ))}
       </div>

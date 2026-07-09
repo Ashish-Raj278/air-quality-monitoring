@@ -11,8 +11,10 @@ import {
   Wind,
 } from "lucide-react";
 
+import { MapPin } from "lucide-react";
+
 import { MetricCard } from "@/components/MetricCard";
-import { formatTime, getAqiCategory } from "@/lib/aqi";
+import { formatDate, formatTime, getAqiCategory } from "@/lib/aqi";
 import { useMonitoring } from "@/lib/monitoring-context";
 
 export const Route = createFileRoute("/")({
@@ -20,20 +22,43 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { latest, stats } = useMonitoring();
+  const { latest, stats, city, setCity, cities } = useMonitoring();
   if (!latest) return null;
   const category = getAqiCategory(latest.aqi);
   const pct = Math.min(100, (latest.aqi / 350) * 100);
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-          Air Quality Dashboard
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Real-time overview of environmental conditions · Updated {formatTime(latest.timestamp)}
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+            Air Quality Dashboard
+          </h1>
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+            <MapPin className="h-4 w-4 text-primary" />
+            Current City:{" "}
+            <span className="font-semibold text-foreground">{city}</span>
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Last Updated · {formatDate(latest.timestamp)} · {formatTime(latest.timestamp)}
+          </p>
+        </div>
+        <div className="min-w-[200px]">
+          <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Select City
+          </label>
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm font-medium text-card-foreground outline-none transition focus:ring-2 focus:ring-ring"
+          >
+            {cities.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* AQI Hero */}

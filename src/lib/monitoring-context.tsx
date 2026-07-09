@@ -9,9 +9,12 @@ import {
   type ReactNode,
 } from "react";
 
-import { generateReading, seedReadings, type Reading } from "./aqi";
-
-const MAX_HISTORY = 200;
+import {
+  CITIES,
+  generateCityHistory,
+  generateCityReading,
+  type Reading,
+} from "./aqi";
 
 interface MonitoringStats {
   avgAqi: number;
@@ -22,6 +25,9 @@ interface MonitoringStats {
 }
 
 interface MonitoringContextValue {
+  city: string;
+  setCity: (c: string) => void;
+  cities: string[];
   readings: Reading[];
   latest: Reading | null;
   live: boolean;
@@ -33,24 +39,35 @@ interface MonitoringContextValue {
 const MonitoringContext = createContext<MonitoringContextValue | null>(null);
 
 export function MonitoringProvider({ children }: { children: ReactNode }) {
-  const [readings, setReadings] = useState<Reading[]>(() => seedReadings(20));
+  const [city, setCity] = useState<string>(CITIES[0].name);
+  const [readings, setReadings] = useState<Reading[]>(() =>
+    generateCityHistory(CITIES[0].name),
+  );
+  const [latest, setLatest] = useState<Reading>(() =>
+    generateCityReading(CITIES[0].name),
+  );
   const [live, setLive] = useState(true);
   const liveRef = useRef(live);
   liveRef.current = live;
+  const cityRef = useRef(city);
+  cityRef.current = city;
 
-  const push = useCallback(() => {
-    setReadings((prev) => {
-      const next = [...prev, generateReading()];
-      return next.slice(-MAX_HISTORY);
-    });
+  // Rebuild all data when the selected city changes.
+  useEffect(() => {
+    setReadings(generateCityHistory(city));
+    setLatest(generateCityReading(city));
+  }, [city]);
+
+  const refresh = useCallback(() => {
+    setLatest(generateCityReading(cityRef.current));
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (liveRef.current) push();
+      if (liveRef.current) setLatest(generateCityReading(cityRef.current));
     }, 5000);
     return () => clearInterval(interval);
-  }, [push]);
+  }, []);
 
   const stats = useMemo<MonitoringStats>(() => {
     if (readings.length === 0) {
@@ -69,14 +86,17 @@ export function MonitoringProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<MonitoringContextValue>(
     () => ({
+      city,
+      setCity,
+      cities: CITIES.map((c) => c.name),
       readings,
-      latest: readings[readings.length - 1] ?? null,
+      latest,
       live,
       setLive,
-      refresh: push,
+      refresh,
       stats,
     }),
-    [readings, live, push, stats],
+    [city, readings, latest, live, refresh, stats],
   );
 
   return <MonitoringContext.Provider value={value}>{children}</MonitoringContext.Provider>;

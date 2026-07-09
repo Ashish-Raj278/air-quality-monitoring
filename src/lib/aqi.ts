@@ -108,6 +108,55 @@ export function seedReadings(count = 20): Reading[] {
   );
 }
 
+/* ---- City-based simulation ---- */
+
+export interface CityProfile {
+  name: string;
+  aqi: number;
+  temp: number;
+  humidity: number;
+}
+
+export const CITIES: CityProfile[] = [
+  { name: "Bengaluru", aqi: 68, temp: 26, humidity: 60 },
+  { name: "Delhi", aqi: 182, temp: 32, humidity: 45 },
+  { name: "Mumbai", aqi: 91, temp: 30, humidity: 72 },
+  { name: "Chennai", aqi: 74, temp: 33, humidity: 68 },
+  { name: "Kolkata", aqi: 129, temp: 31, humidity: 70 },
+];
+
+export type CityName = (typeof CITIES)[number]["name"];
+
+const around = (base: number, pct: number) => base * (1 + (Math.random() * 2 - 1) * pct);
+
+export function generateCityReading(city: string, timestamp = Date.now()): Reading {
+  const p = CITIES.find((c) => c.name === city) ?? CITIES[0];
+  const aqi = Math.max(5, Math.round(around(p.aqi, 0.18)));
+  return {
+    id: `${city}-${timestamp}-${Math.random().toString(36).slice(2, 7)}`,
+    timestamp,
+    aqi,
+    pm25: Math.round(aqi * 0.6 * (0.85 + Math.random() * 0.3)),
+    pm10: Math.round(aqi * 0.9 * (0.85 + Math.random() * 0.3)),
+    temperature: Number(around(p.temp, 0.08).toFixed(1)),
+    humidity: Math.round(around(p.humidity, 0.12)),
+    co2: Math.round(420 + aqi * 2 + Math.random() * 120),
+  };
+}
+
+const DAY_MS = 86_400_000;
+
+export function generateCityHistory(city: string, days = 30): Reading[] {
+  const now = Date.now();
+  return Array.from({ length: days }, (_, i) =>
+    generateCityReading(city, now - (days - 1 - i) * DAY_MS),
+  );
+}
+
+export function formatDate(ts: number): string {
+  return new Date(ts).toLocaleDateString([], { month: "short", day: "numeric" });
+}
+
 export function formatTime(ts: number): string {
   return new Date(ts).toLocaleTimeString([], {
     hour: "2-digit",
