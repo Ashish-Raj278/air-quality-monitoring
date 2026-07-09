@@ -74,11 +74,6 @@ export function AppSidebar({ open, onClose }: { open: boolean; onClose: () => vo
             );
           })}
         </nav>
-
-        <div className="m-3 rounded-xl bg-sidebar-accent p-4 text-xs text-muted-foreground">
-          <p className="font-semibold text-sidebar-foreground">Simulated Data</p>
-          <p className="mt-1">Readings are generated for demonstration purposes.</p>
-        </div>
       </aside>
     </>
   );
