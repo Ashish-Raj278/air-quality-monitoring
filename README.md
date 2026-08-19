@@ -60,7 +60,7 @@ The development server prints the local URL in the terminal (normally `http://lo
 
 The app uses predefined city profiles and generates realistic, randomized readings in the browser. Switching cities rebuilds the 30-day historical dataset for that city. The live reading updates every five seconds while simulation is enabled.
 
-The sign-in form is for the demo interface only. It validates an email address and a password of at least four characters, then stores only the email in local or session storage when requested. No account service or authentication backend is used.
+The sign-in form is for the demo interface only. It validates an email address and a password of at least four or more characters, then stores only the email in local or session storage when requested. No account service or authentication backend is used.
 
 ## Project Structure
 
